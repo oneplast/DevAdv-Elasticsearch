@@ -1,0 +1,5 @@
+rootProject.name = 'account-service'
+
+include(':core')
+project(':core').projectDir = file('../core')
+

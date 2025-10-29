@@ -1,0 +1,106 @@
+server:
+  port: 0
+
+spring:
+
+  application:
+    name: demo-service
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/test_db
+    username: app1
+    password: app1!
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      acks: all
+
+      properties:
+        delivery.timeout.ms: 120000
+        linger.ms: 0
+        request.timeout.ms: 30000
+        enable.idempotence: true
+        allow.auto.create.topics: false
+
+    consumer:
+      group-id: accounts-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: io.eddie.core.*
+        allow.auto.create.topics: false
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+carts:
+
+  event:
+    topic:
+      name: carts-events
+
+  command:
+    topic:
+      name: carts-commands
+
+deposits:
+
+  event:
+    topic:
+      name: deposits-events
+
+  command:
+    topic:
+      name: deposits-commands
+
+custom:
+
+  kafka:
+    config:
+      topic-partitions: 1
+      topic-replications: 1
+
+  batch:
+    chunk:
+      size: 100
+
+  settlement:
+    rate: 0.7
+
+  payments:
+    toss:
+      confirm-url: "https://api.tosspayments.com/v1/payments/confirm"
+      secrets: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6
+
+eureka:
+  instance:
+    instance-id: "${spring.application.name}:${server.port}:${random.uuid}"
+
